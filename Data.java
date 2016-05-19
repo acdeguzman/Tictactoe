@@ -1,9 +1,9 @@
 public class Data {
-    int score;
-    Coordinate point;
+    int utility;
+    Coordinate coordinate;
 
-    Data(int score, Coordinate coordinate) {
-        this.score = score;
-        this.point = coordinate;
+    Data(int utility, Coordinate coordinate) {
+        this.utility = utility;
+        this.coordinate = coordinate;
     }
 }

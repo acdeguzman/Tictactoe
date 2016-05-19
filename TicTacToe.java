@@ -48,8 +48,6 @@ public class TicTacToe extends JFrame implements ActionListener{
             
             if (!board.isGameOver()) {            
 	            board.alphaBetaMinimax(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
-	            for (Data pas : board.rootsChildrenScore) 
-	                System.out.println("Point: " + pas.point + " Score: " + pas.score);
 	            
 	            board.placeAMove(board.returnBestMove(), 1);
 	            int bestX = board.returnBestMove().x;
@@ -58,9 +56,9 @@ public class TicTacToe extends JFrame implements ActionListener{
             }
         }
     	
-        if (board.hasXWon()) {
+        if (board.xWins()) {
             System.out.println("Unfortunately, you lost!");
-        } else if (board.hasOWon()) {
+        } else if (board.oWins()) {
             System.out.println("You win!");
         } else if (board.isGameOver()){
             System.out.println("It's a draw!");   

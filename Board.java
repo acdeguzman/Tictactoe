@@ -5,10 +5,10 @@ public class Board {
     List<Coordinate> availablePoints;
     int[][] board = new int[3][3]; 
 
-    List<Data> rootsChildrenScore = new ArrayList<>();
+    List<Data> childrenUtility = new ArrayList<>();
 
     public int evaluateBoard() {
-        int score = 0;
+        int utility = 0;
 
         //Check all rows
         for (int i = 0; i < 3; ++i) {
@@ -22,7 +22,7 @@ public class Board {
                 }
 
             } 
-            score+=changeInScore(X, O); 
+            utility+=changeInUtility(X, O); 
         }
 
         //Check all columns
@@ -36,7 +36,7 @@ public class Board {
                     X++;
                 } 
             }
-            score+=changeInScore(X, O);
+            utility+=changeInUtility(X, O);
         }
 
         int X = 0;
@@ -51,7 +51,7 @@ public class Board {
             }
         }
 
-        score+=changeInScore(X, O);
+        utility+=changeInUtility(X, O);
 
         X = 0;
         O = 0;
@@ -65,12 +65,12 @@ public class Board {
             }
         }
 
-        score+=changeInScore(X, O);
+        utility+=changeInUtility(X, O);
 
-        return score;
+        return utility;
     }
     
-    private int changeInScore(int X, int O){
+    private int changeInUtility(int X, int O){
         int change;
         if (X == 3) {
             change = 100;
@@ -107,7 +107,7 @@ public class Board {
         
         if(pointsAvailable.isEmpty()) return 0;
         
-        if(depth==0) rootsChildrenScore.clear(); 
+        if(depth==0) childrenUtility.clear(); 
         
         int maxValue = Integer.MIN_VALUE;
         int minValue = Integer.MAX_VALUE;
@@ -115,62 +115,62 @@ public class Board {
         for(int i=0;i<pointsAvailable.size(); ++i){
         	Coordinate point = pointsAvailable.get(i);
             
-            int currentScore = 0;
+            int currentUtility = 0;
             
             if(turn == 1){
                 placeAMove(point, 1); 
-                currentScore = alphaBetaMinimax(alpha, beta, depth+1, 2);
-                maxValue = Math.max(maxValue, currentScore); 
+                currentUtility = alphaBetaMinimax(alpha, beta, depth+1, 2);
+                maxValue = Math.max(maxValue, currentUtility); 
                 
                 //Set alpha
-                alpha = Math.max(currentScore, alpha);
+                alpha = Math.max(currentUtility, alpha);
                 
                 if(depth == 0)
-                    rootsChildrenScore.add(new Data(currentScore, point));
+                    childrenUtility.add(new Data(currentUtility, point));
             }else if(turn == 2){
                 placeAMove(point, 2);
-                currentScore = alphaBetaMinimax(alpha, beta, depth+1, 1); 
-                minValue = Math.min(minValue, currentScore);
+                currentUtility = alphaBetaMinimax(alpha, beta, depth+1, 1); 
+                minValue = Math.min(minValue, currentUtility);
                 
                 //Set beta
-                beta = Math.min(currentScore, beta);
+                beta = Math.min(currentUtility, beta);
             }
             //reset board
             board[point.x][point.y] = 0; 
             
             //If a pruning has been done, don't evaluate the rest of the sibling states
-            if(currentScore == Integer.MAX_VALUE || currentScore == Integer.MIN_VALUE) break;
+            if(currentUtility == Integer.MAX_VALUE || currentUtility == Integer.MIN_VALUE) break;
         }
         return turn == 1 ? maxValue : minValue;
     }  
 
     public boolean isGameOver() {				//Game is over is someone has won, or board is full (draw)
-        return (hasXWon() || hasOWon() || getAvailableStates().isEmpty());
+        return (xWins() || oWins() || getAvailableStates().isEmpty());
     }
 
-    public boolean hasXWon() {
-        if ((board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] == 1) || (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] == 1)) {
-            return true;
+    public boolean xWins() {
+        if ((board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] == 1)
+        			|| (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] == 1)) {
+        	return true;
         }
         for (int i = 0; i < 3; ++i) {
             if (((board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] == 1)
                     || (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] == 1))) {
-                return true;
+            	return true;
             }
         }
         return false;
     }
 
-    public boolean hasOWon() {
-        if ((board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] == 2) || (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] == 2)) {
-            // System.out.println("O Diagonal Win");
-            return true;
+    public boolean oWins() {
+        if ((board[0][0] == board[1][1] && board[0][0] == board[2][2] && board[0][0] == 2) 
+        			|| (board[0][2] == board[1][1] && board[0][2] == board[2][0] && board[0][2] == 2)) {
+        	return true;
         }
         for (int i = 0; i < 3; ++i) {
             if ((board[i][0] == board[i][1] && board[i][0] == board[i][2] && board[i][0] == 2)
                     || (board[0][i] == board[1][i] && board[0][i] == board[2][i] && board[0][i] == 2)) {
-                //  System.out.println("O Row or Column win");
-                return true;
+            	return true;
             }
         }
 
@@ -197,14 +197,14 @@ public class Board {
         int MAX = -100000;
         int best = -1;
 
-        for (int i = 0; i < rootsChildrenScore.size(); ++i) {
-            if (MAX < rootsChildrenScore.get(i).score) {
-                MAX = rootsChildrenScore.get(i).score;
+        for (int i = 0; i < childrenUtility.size(); ++i) {
+            if (MAX < childrenUtility.get(i).utility) {
+                MAX = childrenUtility.get(i).utility;
                 best = i;
             }
         }
 
-        return rootsChildrenScore.get(best).point;
+        return childrenUtility.get(best).coordinate;
     }
     
     public void resetBoard() {
