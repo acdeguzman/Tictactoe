@@ -96,9 +96,8 @@ public class Board {
     public int alphaBetaMinimax(int alpha, int beta, int depth, int turn){
         
         if(beta<=alpha){
-        		//System.out.println("Pruning at depth = " + depth);
-            if(turn == 1) return Integer.MAX_VALUE;
-            else return Integer.MIN_VALUE; 
+            if(turn == 1) return beta;
+            else return alpha; 
         }
         
         if(depth == uptoDepth || isGameOver()) return evaluateBoard();
@@ -113,7 +112,7 @@ public class Board {
         int minValue = Integer.MAX_VALUE;
         
         for(int i=0;i<pointsAvailable.size(); ++i){
-        	Coordinate point = pointsAvailable.get(i);
+        		Coordinate point = pointsAvailable.get(i);
             
             int currentUtility = 0;
             
@@ -122,12 +121,13 @@ public class Board {
                 currentUtility = alphaBetaMinimax(alpha, beta, depth+1, 2);
                 maxValue = Math.max(maxValue, currentUtility); 
                 
+                //if(v > beta): return v
                 //Set alpha
                 alpha = Math.max(currentUtility, alpha);
                 
                 if(depth == 0)
                     childrenUtility.add(new Data(currentUtility, point));
-            }else if(turn == 2){
+            } else if(turn == 2){
                 placeAMove(point, 2);
                 currentUtility = alphaBetaMinimax(alpha, beta, depth+1, 1); 
                 minValue = Math.min(minValue, currentUtility);
@@ -190,7 +190,7 @@ public class Board {
     }
 
     public void placeAMove(Coordinate point, int player) {
-        board[point.x][point.y] = player;   //player = 1 for X, 2 for O
+        board[point.x][point.y] = player;   //player = 1 for O, 2 for X
     }
 
     public Coordinate returnBestMove() {
@@ -207,9 +207,16 @@ public class Board {
         return childrenUtility.get(best).coordinate;
     }
     
+    public void resetBoard() {
+        for (int i = 0; i < 3; ++i) {
+            for (int j = 0; j < 3; ++j) {
+                board[i][j] = 0;
+            }
+        }
+    } 
+    
     public boolean checkBoard(int a, int b) {
         if(board[a][b] != 0) return true;
         else return false;
     } 
 }
->>>>>>> 85754c0bbc0e8ad61863316d2cb3aafb4650241b

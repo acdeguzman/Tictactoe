@@ -53,7 +53,7 @@ public class TicTacToe extends JFrame implements ActionListener{
     		int u = rand.nextInt(3);
 			Coordinate userMove = new Coordinate(q,u);
 
-         board.placeAMove(userMove, 1); //2 for O and O is the user
+         board.placeAMove(userMove, 1); //1 is for O
          button[q][u].setText("O");
     	} else {
     		JButton btn =  (JButton) evt.getSource();
@@ -63,33 +63,31 @@ public class TicTacToe extends JFrame implements ActionListener{
     		if(board.checkBoard(a,b)){
     			JOptionPane.showMessageDialog(cont, "Coordinate already has a value!", "Coordinate already has a 					value!", JOptionPane.CLOSED_OPTION);
     		} else {
-		     	if (!board.isGameOver()) {
-		     		Coordinate userMove = new Coordinate(a,b);
+	     		Coordinate userMove = new Coordinate(a,b);
 
-            board.placeAMove(userMove, 2); //2 for O and O is the user
-            button[a][b].setText("X");
-            
-            if (!board.isGameOver()) {            
-	            board.alphaBetaMinimax(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
-	            
-	            board.placeAMove(board.returnBestMove(), 1);
-	            int bestX = board.returnBestMove().x;
-	            int bestY = board.returnBestMove().y;				
-	    	   	//button[bestX][bestY].setBackground(Color.BLUE);
-	    	   	button[bestX][bestY].setText("O");
-            }
-        }
-    	
-        if (board.xWins()) {
-        	JOptionPane.showMessageDialog(cont, "You Lost!", "You Lost!", JOptionPane.CLOSED_OPTION);
-        	resetBoard();
-        } else if (board.oWins()) {
-        	JOptionPane.showMessageDialog(cont, "You Win!", "You Win!", JOptionPane.CLOSED_OPTION);
-        	resetBoard();
-        } else if (board.isGameOver()){
-        	JOptionPane.showMessageDialog(cont, "Draw!", "Draw!", JOptionPane.CLOSED_OPTION);
-        	resetBoard();
-        }
+	         board.placeAMove(userMove, 2); //2 is for X
+	         button[a][b].setText("X");
+	         
+	         if (!board.isGameOver()) {            
+		         board.alphaBetaMinimax(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
+		         
+		         board.placeAMove(board.returnBestMove(), 1);
+		         int bestX = board.returnBestMove().x;
+		         int bestY = board.returnBestMove().y;				
+		 	   	//button[bestX][bestY].setBackground(Color.BLUE);
+		 	   	button[bestX][bestY].setText("O");
+	         }
+		 	
+		     if (board.xWins()) {
+		     	JOptionPane.showMessageDialog(cont, "You Lost!", "You Lost!", JOptionPane.CLOSED_OPTION);
+		     	resetBoard();
+		     } else if (board.oWins()) {
+		     	JOptionPane.showMessageDialog(cont, "You Win!", "You Win!", JOptionPane.CLOSED_OPTION);
+		     	resetBoard();
+		     } else if (board.isGameOver()){
+		     	JOptionPane.showMessageDialog(cont, "Draw!", "Draw!", JOptionPane.CLOSED_OPTION);
+		     	resetBoard();
+		     }
 		}
       }
    }
