@@ -70,11 +70,26 @@ public class TicTacToe extends JFrame implements ActionListener{
     	
         if (board.xWins()) {
         	JOptionPane.showMessageDialog(cont, "You Lost!", "You Lost!", JOptionPane.CLOSED_OPTION);
+        	resetBoard();
         } else if (board.oWins()) {
         	JOptionPane.showMessageDialog(cont, "You Win!", "You Win!", JOptionPane.CLOSED_OPTION);
+        	resetBoard();
         } else if (board.isGameOver()){
         	JOptionPane.showMessageDialog(cont, "Draw!", "Draw!", JOptionPane.CLOSED_OPTION);
+        	resetBoard();
         }
+   }
+
+   public void resetBoard() {
+
+		for(int i=0; i<3;i++){
+			for(int j=0; j<3; j++){
+				button[i][j].setText("");
+				button[i][j].putClientProperty("1",i);
+				button[i][j].putClientProperty("2",j);
+				board.board[i][j] = 0;
+			}
+		}   		
    }
 }
 
