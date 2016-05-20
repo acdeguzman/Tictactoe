@@ -1,17 +1,16 @@
-import java.awt.Color;
-import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-
-@SuppressWarnings("serial")
+//@SuppressWarnings("serial")
 public class TicTacToe extends JFrame implements ActionListener{
-	JPanel tictactoe = new JPanel(new GridLayout(3, 3));
+	JPanel tictactoe = new JPanel();
+	JPanel cont = new JPanel();
+	GridLayout grid = new GridLayout(3,3);
 	JButton[][] button = new JButton[3][3];
 	Board board = new Board();
+	JButton first = new JButton("AI first");
+	JButton reset = new JButton("Reset");
 	
 	public TicTacToe() {		
 		
@@ -19,16 +18,28 @@ public class TicTacToe extends JFrame implements ActionListener{
 			for(int j=0; j<3; j++){
 				button[i][j]= new JButton();
 				tictactoe.add(button[i][j]);
-				button[i][j].setBackground(Color.WHITE);
+				button[i][j].setBackground(Color.BLACK);
 				button[i][j].addActionListener(this);
 				button[i][j].putClientProperty("1",i);
 				button[i][j].putClientProperty("2",j);
+				button[i][j].setFont(new Font("Arial", Font.BOLD, 70));
+				button[i][j].setForeground(Color.WHITE);
 			}
 		}
-		
-		add(tictactoe);
-		setSize(300, 300);
+
+		tictactoe.setPreferredSize(new Dimension(300, 300));
+		tictactoe.setLayout(grid);
+
+		cont.setPreferredSize(new Dimension(300,400));
+		cont.add(tictactoe);
+		cont.add(first);
+		cont.add(reset);
+
+		setPreferredSize(new Dimension(300,400));
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		add(cont);
         setVisible(true);
+        pack();
 	}
 	
     public static void main(String[] args) {
@@ -44,7 +55,7 @@ public class TicTacToe extends JFrame implements ActionListener{
         	Coordinate userMove = new Coordinate(a,b);
 
             board.placeAMove(userMove, 2); //2 for O and O is the user
-            button[a][b].setBackground(Color.GREEN);
+            button[a][b].setText("X");
             
             if (!board.isGameOver()) {            
 	            board.alphaBetaMinimax(Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
@@ -52,16 +63,17 @@ public class TicTacToe extends JFrame implements ActionListener{
 	            board.placeAMove(board.returnBestMove(), 1);
 	            int bestX = board.returnBestMove().x;
 	            int bestY = board.returnBestMove().y;				
-	    	   	button[bestX][bestY].setBackground(Color.BLUE);
+	    	   	//button[bestX][bestY].setBackground(Color.BLUE);
+	    	   	button[bestX][bestY].setText("O");
             }
         }
     	
         if (board.xWins()) {
-            System.out.println("Unfortunately, you lost!");
+        	JOptionPane.showMessageDialog(cont, "You Lost!", "You Lost!", JOptionPane.CLOSED_OPTION);
         } else if (board.oWins()) {
-            System.out.println("You win!");
+        	JOptionPane.showMessageDialog(cont, "You Win!", "You Win!", JOptionPane.CLOSED_OPTION);
         } else if (board.isGameOver()){
-            System.out.println("It's a draw!");   
+        	JOptionPane.showMessageDialog(cont, "Draw!", "Draw!", JOptionPane.CLOSED_OPTION);
         }
    }
 }
